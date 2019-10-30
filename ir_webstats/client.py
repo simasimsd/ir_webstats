@@ -1,29 +1,21 @@
 #!/usr/bin/python
-""" iRWebStats class. Check examples.py for example usage. """
-__author__ = "Jeyson Molina"
-__email__ = "jjmc82@gmail.com"
-__version__ = "1.0"
-
-
 import urllib
-
-try:
-    import urllib.parse
-    encode = urllib.parse.urlencode  # python3
-except:
-    encode = urllib.urlencode  # python2
-
-from io import StringIO
 import requests
-from ir_webstats import constants as ct
 import datetime
 import csv
 import time
-from ir_webstats.util import *
+import urllib.parse
 import datetime
+from io import StringIO
 from operator import itemgetter
 
 
+from ir_webstats import constants as ct
+from ir_webstats.util import *
+
+__all__ = ['iRWebStats']
+
+encode = urllib.parse.urlencode
 
 class iRWebStats:
 
@@ -558,4 +550,3 @@ if __name__ == '__main__':
     irw = iRWebStats()
     user, passw = ('username', 'password')
     irw.login(user, passw)
-    print("Last Session result for F3", irw.get_last_session_data(2560))  # example usage

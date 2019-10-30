@@ -17,6 +17,7 @@ pip install git+https://github.com/simasimsd/ir_webstats.git#egg=ir_webstats
 
 ### Usage
 ```
+from ir_webstats import iRWebStats
 irw = iRWebStats()
 irw.login('username', 'password')
 print (irw.cars_driven())  # cars driven by user
