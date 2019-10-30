@@ -20,6 +20,9 @@ import datetime
 import csv
 import time
 from ir_webstats.util import *
+import datetime
+from operator import itemgetter
+
 
 
 class iRWebStats:
@@ -39,8 +42,8 @@ class iRWebStats:
             {}, {}, {}, {}
 
     def __save_cookie(self):
-        """ Saves the current cookie to disk from a successful login to avoid 
-            future login procedures and save time. A cookie usually last  
+        """ Saves the current cookie to disk from a successful login to avoid
+            future login procedures and save time. A cookie usually last
             at least a couple of hours """
 
         pprint("Saving cookie for future use", self.verbose)
@@ -60,9 +63,9 @@ class iRWebStats:
             return False
 
     def login(self, username='', password=''):
-        """ Log in to iRacing members site. If there is a valid cookie saved 
-            then it tries to use it to avoid a new login request. Returns 
-            True is the login was succesful and stores the customer id 
+        """ Log in to iRacing members site. If there is a valid cookie saved
+            then it tries to use it to avoid a new login request. Returns
+            True is the login was succesful and stores the customer id
             (custid) of the current login in self.custid. """
 
         if self.logged:
@@ -144,8 +147,8 @@ class iRWebStats:
         return html
 
     def __get_irservice_info(self, resp):
-        """ Gets general information from iracing service like current tracks, 
-            cars, series, etc. Check self.TRACKS, self.CARS, self.DIVISION 
+        """ Gets general information from iracing service like current tracks,
+            cars, series, etc. Check self.TRACKS, self.CARS, self.DIVISION
             , self.CARCLASS, self.CLUB. """
 
         pprint("Getting iRacing Service info (cars, tracks, etc.)",
@@ -182,7 +185,7 @@ class iRWebStats:
 
     @logged_in
     def iratingchart(self, custid=None, category=ct.IRATING_ROAD_CHART):
-        """ Gets the irating data of a driver using its custom id (custid) 
+        """ Gets the irating data of a driver using its custom id (custid)
             that generates the chart located in the driver's profile. """
 
         r = self.__req(ct.URL_STATS_CHART % (custid, category),
@@ -220,7 +223,7 @@ class iRWebStats:
 
     @logged_in
     def personal_best(self, custid=None, carid=0):
-        """ Personal best times of driver (custid) using car 
+        """ Personal best times of driver (custid) using car
             (carid. check self.CARS) set in official events."""
         r = self.__req(ct.URL_PERSONAL_BEST % (carid, custid),
                        cookie=self.last_cookie)
@@ -228,7 +231,7 @@ class iRWebStats:
 
     @logged_in
     def driverdata(self, drivername):
-        """ Personal data of driver  using its name in the request 
+        """ Personal data of driver  using its name in the request
             (i.e drivername="Victor Beltran"). """
 
         r = self.__req(ct.URL_DRIVER_STATUS % (encode({
@@ -250,11 +253,11 @@ class iRWebStats:
                       avg_finish=(0, ct.ALL), avg_points=(0, ct.ALL),
                       avg_incs=(0, ct.ALL), active=False,
                       sort=ct.SORT_IRATING, page=1, order=ct.ORDER_DESC):
-        """Search drivers using several search fields. A tuple represent a 
-           range (i.e irating=(1000, 2000) gets drivers with irating 
-           between 1000 and 2000). Use ct.ALL used in the lower or 
-           upperbound of a range disables that limit. Returns a tuple 
-           (results, total_results) so if you want all results you should 
+        """Search drivers using several search fields. A tuple represent a
+           range (i.e irating=(1000, 2000) gets drivers with irating
+           between 1000 and 2000). Use ct.ALL used in the lower or
+           upperbound of a range disables that limit. Returns a tuple
+           (results, total_results) so if you want all results you should
            request different pages (using page) until you gather all
            total_results. Each page has 25 (ct.NUM_ENTRIES) results max."""
 
@@ -312,9 +315,9 @@ class iRWebStats:
                         series=ct.ALL, season=(2014, 1, ct.ALL),
                         date_range=ct.ALL, page=1, sort=ct.SORT_TIME,
                         order= ct.ORDER_DESC):
-        """ Search race results using various fields. Returns a tuple 
-            (results, total_results) so if you want all results you should 
-            request different pages (using page). Each page has 25 
+        """ Search race results using various fields. Returns a tuple
+            (results, total_results) so if you want all results you should
+            request different pages (using page). Each page has 25
             (ct.NUM_ENTRIES) results max."""
 
         format_ = 'json'
@@ -397,9 +400,9 @@ class iRWebStats:
     def season_standings(self, season, carclass, club=ct.ALL, raceweek=ct.ALL,
                          division=ct.ALL, sort=ct.SORT_POINTS,
                          order=ct.ORDER_DESC, page=1):
-        """ Search season standings using various fields. season, carclass 
-            and club are ids.  Returns a tuple (results, total_results) so 
-            if you want all results you should request different pages 
+        """ Search season standings using various fields. season, carclass
+            and club are ids.  Returns a tuple (results, total_results) so
+            if you want all results you should request different pages
             (using page)  until you gather all total_results. Each page has
             25 results max."""
 
@@ -423,8 +426,8 @@ class iRWebStats:
                        date_range=None, sort=ct .SORT_TIME,
                        order=ct.ORDER_DESC, page=1):
         """ Search hosted races results using various fields. Returns a tuple
-            (results, total_results) so if you want all results you should 
-            request different pages (using page) until you gather all 
+            (results, total_results) so if you want all results you should
+            request different pages (using page) until you gather all
             total_results. Each page has 25 (ct.NUM_ENTRIES) results max."""
 
         lowerbound = ct.NUM_ENTRIES * (page - 1) + 1
@@ -455,7 +458,7 @@ class iRWebStats:
 
     @logged_in
     def session_times(self, series_season, start, end):
-        """ Gets Current and future sessions (qualy, practice, race) 
+        """ Gets Current and future sessions (qualy, practice, race)
             of series_season """
         r = self.__req(ct.URL_SESSION_TIMES, data={'start': start, 'end': end,
                        'season': series_season}, useget=True)
@@ -480,7 +483,7 @@ class iRWebStats:
 
         r = self.__req(ct.URL_GET_EVENTRESULTS % (subsession, sessnum))\
                 .encode('utf8')
-        data = [x for x in csv.reader(StringIO(r), delimiter=',',
+        data = [x for x in csv.reader(StringIO(r.decode('utf8')), delimiter=',',
                                       quotechar='"')]
         header_ev, header_res = data[0], data[3]
         event_info = dict(list(zip(header_ev, data[1])))
@@ -488,8 +491,66 @@ class iRWebStats:
 
         return event_info, results
 
+    # HELPERS
+    def list_series(self):
+        for serie in self.SERIES:
+            print(serie["seasonid"], serie["seriesshortname"])
+
+
+    def format_series(self):
+        series = []
+        self.SERIES = {}
+        for serie in self.SEASON:
+            self.SERIES[serie["seasonid"]] = {
+                "name": serie["seriesshortname"],
+                "raceweek": serie["raceweek"]
+            }
+
+
+    def get_last_session_data(self, series_id):
+        # Get All race result of the race week
+        r = self.series_raceresults(series_id, self.SERIES[series_id]["raceweek"] - 1)
+        # Prepare session Data
+        last_session = max([session["sessionid"] for session in r])
+        subsessionids = [session["subsessionid"] for session in r if session["sessionid"] == last_session]
+        sorted_session = sorted(r, key=itemgetter('sessionid'))
+        formatted_data = {
+            "start_time": datetime.datetime.fromtimestamp(sorted_session[-1]["start_time"] / 1000),
+            "track": self.TRACKS[sorted_session[-1]["trackid"]]["skuname"],
+            "splits": [self.format_subsession_results(subsession) for subsession in subsessionids]
+        }
+        return formatted_data
+
+
+    def format_subsession_results(self, subsession):
+        r = self.event_results(subsession)
+        best_irating = 0
+        worst_irating = 15000
+        out_leader_lap = 0
+        for racer in r[1]:
+            best_irating = best_irating if best_irating > int(racer["Old iRating"]) else int(racer["Old iRating"])
+            worst_irating = worst_irating if worst_irating < int(racer["Old iRating"]) else int(racer["Old iRating"])
+            out_leader_lap = out_leader_lap + 1 if racer["Interval"][-1] == "L" else out_leader_lap
+
+        result = {
+            "sof": r[0]["Strength of Field"],
+            "winner": r[1][0]["Name"],
+            "avg": {
+                "top1": r[1][0]["Average Lap Time"] if len(r[1]) >= 1 else "0:00.000",
+                "top3": r[1][2]["Average Lap Time"] if len(r[1]) >= 3 else "0:00.000",
+                "top5": r[1][4]["Average Lap Time"] if len(r[1]) >= 5 else "0:00.000",
+                "top10": r[1][9]["Average Lap Time"] if len(r[1]) >= 10 else "0:00.000",
+            },
+            "out_leader_lap": out_leader_lap,
+            "best_irating": best_irating,
+            "worst_irating": worst_irating,
+            "participants": len(r[1])
+        }
+        return result
+
+
 if __name__ == '__main__':
     irw = iRWebStats()
     user, passw = ('username', 'password')
     irw.login(user, passw)
-    print("Cars Driven", irw.cars_driven())  # example usage
+    print("Last Session result for F3", irw.get_last_session_data(2560))  # example usage
