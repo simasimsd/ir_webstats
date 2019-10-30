@@ -170,6 +170,7 @@ class iRWebStats:
 
             except Exception as e:
                 pprint(("Error ocurred. Couldn't get", i), self.verbose)
+        self.format_series()
 
     def _load_irservice_var(self, varname, resp, appear=1):
         str2find = "var " + varname + " = extractJSON('"
@@ -547,6 +548,10 @@ class iRWebStats:
             "participants": len(r[1])
         }
         return result
+
+    def get_best_lap_from_current_raceweek(self, driveid=None):
+
+        print(self.personal_best(custid=driveid or self.custid, carid=106))
 
 
 if __name__ == '__main__':

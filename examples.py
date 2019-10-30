@@ -17,10 +17,10 @@ if not irw.logged:
 # Cars driven by user
 irw.format_series()
 
-r = irw.get_last_session_data(2560)  # Returns cars id
+r = irw.get_best_lap_from_current_raceweek("Simon Dubois")  # Returns cars id
 print(r)
 # print("\n--> 1. Cars driven by custid:%s \n" % (irw.custid))
-# print("\n".join([irw.CARS[c]['name'] for c in r]))
+# print("\n".join([irw.CARS[c]['id'] for c in r]))
 #
 # # Career stats
 # r = irw.career_stats()
